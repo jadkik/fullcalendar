@@ -1,4 +1,5 @@
-import { PointerDragEvent, preventSelection, allowSelection, preventContextMenu, allowContextMenu, ElementDragging } from '@fullcalendar/core'
+// import { PointerDragEvent, preventSelection, allowSelection, preventContextMenu, allowContextMenu, ElementDragging } from '@fullcalendar/core'
+import { PointerDragEvent, allowSelection, allowContextMenu, ElementDragging } from '@fullcalendar/core'
 import PointerDragging from './PointerDragging'
 import ElementMirror from './ElementMirror'
 import AutoScroller from './AutoScroller'
@@ -32,7 +33,7 @@ export default class FeaturefulElementDragging extends ElementDragging {
   constructor(containerEl: HTMLElement) {
     super(containerEl)
 
-    let pointer = this.pointer = new PointerDragging(containerEl)
+    let pointer = this.pointer = new PointerDragging(containerEl, 'featureful')
     pointer.emitter.on('pointerdown', this.onPointerDown)
     pointer.emitter.on('pointermove', this.onPointerMove)
     pointer.emitter.on('pointerup', this.onPointerUp)
@@ -52,15 +53,15 @@ export default class FeaturefulElementDragging extends ElementDragging {
       this.isDelayEnded = false
       this.isDistanceSurpassed = false
 
-      preventSelection(document.body)
-      preventContextMenu(document.body)
+      // preventSelection(document.body)
+      // preventContextMenu(document.body)
 
       // prevent links from being visited if there's an eventual drag.
       // also prevents selection in older browsers (maybe?).
       // not necessary for touch, besides, browser would complain about passiveness.
-      if (!ev.isTouch) {
-        ev.origEvent.preventDefault()
-      }
+      // if (!ev.isTouch) {
+        // ev.origEvent.preventDefault()
+      // }
 
       this.emitter.trigger('pointerdown', ev)
 

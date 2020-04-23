@@ -33,8 +33,7 @@
       "@fullcalendar/resource-common": [ "packages-premium/resource-common/src/main" ],
       "@fullcalendar/resource-timeline": [ "packages-premium/resource-timeline/src/main" ],
       "@fullcalendar/resource-daygrid": [ "packages-premium/resource-daygrid/src/main" ],
-      "@fullcalendar/resource-timegrid": [ "packages-premium/resource-timegrid/src/main" ],
-      "package-tests/*": [ "packages/__tests__/src/*" ]
+      "@fullcalendar/resource-timegrid": [ "packages-premium/resource-timegrid/src/main" ]
     },
     "rootDir": ".",
     "outDir": "tmp/tsc-output"
@@ -42,7 +41,6 @@
   "include": [
     "packages/*/src/main.ts",
     "packages/core/src/locales/*.js",
-    "packages/__tests__/src/**/*.js",
     "packages-premium/*/src/main.ts",
     "packages-premium/__tests__/src/**/*.js"
   ]

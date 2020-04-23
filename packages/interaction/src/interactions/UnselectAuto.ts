@@ -15,7 +15,7 @@ export default class UnselectAuto {
   constructor(calendar: Calendar) {
     this.calendar = calendar
 
-    let documentPointer = this.documentPointer = new PointerDragging(document)
+    let documentPointer = this.documentPointer = new PointerDragging(document, 'unselect-auto')
     documentPointer.shouldIgnoreMove = true
     documentPointer.shouldWatchScroll = false
     documentPointer.emitter.on('pointerup', this.onDocumentPointerUp)
