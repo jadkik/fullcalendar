@@ -1,12 +1,10 @@
 import { config, elementClosest, EmitterMixin, PointerDragEvent } from '@fullcalendar/core'
 
-config.touchMouseIgnoreWait = 800
+config.touchMouseIgnoreWait = 500
 
 let ignoreMouseDepth = 0
 let listenerCnt = 0
 let isWindowTouchMoveCancelled = false
-
-let zabre = 1
 
 /*
 Uses a "pointer" abstraction, which monitors UI events for both mouse and touch.
@@ -45,12 +43,10 @@ export default class PointerDragging {
   prevScrollX: number // at time of last pointer pageX/pageY capture
   prevScrollY: number // "
 
-  constructor(containerEl: EventTarget, private logName: string = 'no-name') {
+  constructor(containerEl: EventTarget) {
     this.containerEl = containerEl
     this.emitter = new EmitterMixin()
-    this.logName += "/" + zabre++
     containerEl.addEventListener('mousedown', this.handleMouseDown as EventListener)
-    console.log(logName, "HEY HEY, skipping touchstart event");
     containerEl.addEventListener('touchstart', this.handleTouchStart as EventListener, { passive: true })
     listenerCreated()
   }
@@ -77,7 +73,6 @@ export default class PointerDragging {
       return true
     }
 
-    console.log(this.logName, "tryStart false");
     return false
   }
 
@@ -108,7 +103,6 @@ export default class PointerDragging {
       isPrimaryMouseButton(ev) &&
       this.tryStart(ev)
     ) {
-      console.log(this.logName, "handleMouseDown doing stuff");
       let pev = this.createEventFromMouse(ev, true)
       this.emitter.trigger('pointerdown', pev)
       this.initScrollWatch(pev)
@@ -118,8 +112,6 @@ export default class PointerDragging {
       }
 
       document.addEventListener('mouseup', this.handleMouseUp)
-    } else {
-      console.log(this.logName, "handleMouseDown no-op");
     }
   }
 
@@ -148,7 +140,6 @@ export default class PointerDragging {
 
   handleTouchStart = (ev: TouchEvent) => {
     if (this.tryStart(ev)) {
-      console.log(this.logName, "handleTouchStart doing stuff");
       this.isTouchDragging = true
 
       let pev = this.createEventFromTouch(ev, true)
@@ -174,8 +165,6 @@ export default class PointerDragging {
         this.handleTouchScroll,
         true // useCapture
       )
-    } else {
-      console.log(this.logName, "handleTouchStart no-op");
     }
 
   }
@@ -188,7 +177,6 @@ export default class PointerDragging {
 
   handleTouchEnd = (ev: TouchEvent) => {
     if (this.isDragging) { // done to guard against touchend followed by touchcancel
-      console.log(this.logName, "handleTouchEnd doing stuff");
       let target = ev.target as HTMLElement
 
       target.removeEventListener('touchmove', this.handleTouchMove)
@@ -201,8 +189,6 @@ export default class PointerDragging {
       this.cleanup() // call last so that pointerup has access to props
       this.isTouchDragging = false
       startIgnoringMouse()
-    } else {
-      console.log(this.logName, "handleTouchEnd no-op");
     }
   }
 
