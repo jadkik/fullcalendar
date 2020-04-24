@@ -22,7 +22,10 @@ export default class AutoScroller {
   // options that can be set by caller
   isEnabled: boolean = true
   scrollQuery: (Window | string)[] = [ window, '.fc-scroller' ]
-  edgeThreshold: number = 50 // pixels
+  topEdgeThreshold: number = 50 // pixels
+  bottomEdgeThreshold: number = 200 // pixels, larger to account for bottom bar of ios
+  leftEdgeThreshold: number = 50 // pixels
+  rightEdgeThreshold: number = 50 // pixels
   maxVelocity: number = 300 // pixels per second
 
   // internal state
@@ -117,11 +120,28 @@ export default class AutoScroller {
 
   private handleSide(edge: Edge, seconds: number) {
     let { scrollCache } = edge
-    let { edgeThreshold } = this
+    let { topEdgeThreshold, bottomEdgeThreshold, leftEdgeThreshold, rightEdgeThreshold } = this
+    let edgeThreshold: number;
+    let factor: number = 1;
+    switch (edge.name) {
+      case 'top':
+        edgeThreshold = topEdgeThreshold;
+        break;
+      case 'bottom':
+        edgeThreshold = bottomEdgeThreshold;
+        factor = 4;
+        break;
+      case 'left':
+        edgeThreshold = leftEdgeThreshold;
+        break;
+      case 'right':
+        edgeThreshold = rightEdgeThreshold;
+        break;
+    }
     let invDistance = edgeThreshold - edge.distance
     let velocity = // the closer to the edge, the faster we scroll
       (invDistance * invDistance) / (edgeThreshold * edgeThreshold) * // quadratic
-      this.maxVelocity * seconds
+      this.maxVelocity * seconds * factor
     let sign = 1
 
     switch (edge.name) {
@@ -144,7 +164,7 @@ export default class AutoScroller {
 
   // left/top are relative to document topleft
   private computeBestEdge(left: number, top: number): Edge | null {
-    let { edgeThreshold } = this
+    let { topEdgeThreshold, bottomEdgeThreshold, leftEdgeThreshold, rightEdgeThreshold } = this
     let bestSide: Edge | null = null
 
     for (let scrollCache of this.scrollCaches!) {
@@ -158,28 +178,28 @@ export default class AutoScroller {
       if (leftDist >= 0 && rightDist >= 0 && topDist >= 0 && bottomDist >= 0) {
 
         if (
-          topDist <= edgeThreshold && this.everMovedUp && scrollCache.canScrollUp() &&
+          topDist <= topEdgeThreshold && this.everMovedUp && scrollCache.canScrollUp() &&
           (!bestSide || bestSide.distance > topDist)
         ) {
           bestSide = { scrollCache, name: 'top', distance: topDist }
         }
 
         if (
-          bottomDist <= edgeThreshold && this.everMovedDown && scrollCache.canScrollDown() &&
+          bottomDist <= bottomEdgeThreshold && this.everMovedDown && scrollCache.canScrollDown() &&
           (!bestSide || bestSide.distance > bottomDist)
         ) {
           bestSide = { scrollCache, name: 'bottom', distance: bottomDist }
         }
 
         if (
-          leftDist <= edgeThreshold && this.everMovedLeft && scrollCache.canScrollLeft() &&
+          leftDist <= leftEdgeThreshold && this.everMovedLeft && scrollCache.canScrollLeft() &&
           (!bestSide || bestSide.distance > leftDist)
         ) {
           bestSide = { scrollCache, name: 'left', distance: leftDist }
         }
 
         if (
-          rightDist <= edgeThreshold && this.everMovedRight && scrollCache.canScrollRight() &&
+          rightDist <= rightEdgeThreshold && this.everMovedRight && scrollCache.canScrollRight() &&
           (!bestSide || bestSide.distance > rightDist)
         ) {
           bestSide = { scrollCache, name: 'right', distance: rightDist }
