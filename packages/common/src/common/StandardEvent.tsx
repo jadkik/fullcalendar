@@ -45,7 +45,7 @@ export class StandardEvent extends BaseComponent<StandardEventProps> {
         isToday={props.isToday}
       >
         {(rootElRef, classNames, innerElRef, innerContent, hookProps) => (
-          <a
+          <div
             className={props.extraClassNames.concat(classNames).join(' ')}
             style={{
               borderColor: hookProps.borderColor,
@@ -61,7 +61,7 @@ export class StandardEvent extends BaseComponent<StandardEventProps> {
               <div className="fc-event-resizer fc-event-resizer-start" />}
             {hookProps.isEndResizable &&
               <div className="fc-event-resizer fc-event-resizer-end" />}
-          </a>
+          </div>
         )}
       </EventRoot>
     )
